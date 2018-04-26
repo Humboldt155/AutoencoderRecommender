@@ -7,9 +7,9 @@ from torch.autograd import Variable
 
 def activation(input, kind):
   """
-  Apply an activation function to the input data
-  :param input: Input data
-  :param kind: Type of activation
+  Применить функцию активации к входным данным
+  :param input: Входные данные
+  :param kind: Тип активации
   """
   if kind == 'selu':
     return F.selu(input)
@@ -36,8 +36,8 @@ def activation(input, kind):
 def MSEloss(inputs, targets, size_avarage=False):
   """
   Masked Mean Square Error Loss http://pytorch.org/docs/master/nn.html#torch.nn.MSELoss
-  :param input: Input data
-  :param targets: Target data
+  :param input: Входные данные
+  :param targets: Целевые данные
   :param size_avarage: if True, losses are averaged over observations for each minibatch, if False, the losses are
   summed for each minibatch
   """
