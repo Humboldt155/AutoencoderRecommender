@@ -8,8 +8,10 @@
       <w>filenames</w>
       <w>folderpath</w>
       <w>nvidia</w>
+      <w>recommender</w>
       <w>scikit</w>
       <w>selu</w>
+      <w>xlrd</w>
     </words>
   </dictionary>
 </component>
