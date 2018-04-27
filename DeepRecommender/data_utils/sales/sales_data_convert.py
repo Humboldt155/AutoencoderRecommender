@@ -37,12 +37,14 @@ initial_df['Date'] = (initial_df['Date'] // 100).astype(int) * 100 +\
 
 client_index = 1
 
+skipped = 0
+
 sales_updated_all = []
 
-#for customer_index, customer_row in customers.iterrows():
-for client_id in range(1, 2):
+for customer_index, customer_row in customers.iterrows():
+#for client_id in range(14, 15):
 
-    # client_id = customer_row[1]
+    client_id = customer_row[1]
 
     # Получаем список всех транзакций, выполненных клиентом
     client_df = initial_df[initial_df.client_id == client_id]
@@ -51,6 +53,12 @@ for client_id in range(1, 2):
 
     # получаем список уникальных транзакций
     transactions = pd.DataFrame(client_df['Date'].unique())
+
+    # Если клиент проводил только одну транзакцию, в течение которов покупал товар только одной модели,
+    # Он не интересен для обучения
+    if len(transactions) == len(pd.DataFrame(client_df['model_id'].unique())) == 1:
+        skipped += 1
+        continue
 
     sales_updated = []
 
@@ -64,6 +72,7 @@ for client_id in range(1, 2):
 
         for index, row in client_df.iterrows():
             date = str(int(row['Date']))
+
             model = row['model_id']
             client = row['client_id']
             summary = row['sum']
@@ -99,9 +108,16 @@ for client_id in range(1, 2):
                 unique_models_list.append(model_1)
                 unique_models_list.append(model_2)
 
-            if (model_2 == ''):
+            if -10000 < model_1 < 0:
+                model_1 = model_1 * (-1)
+
+
+            if model_2 == '':
+                probability_1 = float(probability_1) * 5
                 transactions_list.append({'client_id': client_index, 'model_id': model_1, 'probability': probability_1})
             else:
+                probability_1 = float(probability_1) * 5
+                probability_2 = float(probability_2) * 5
                 transactions_list.append({'client_id': client_index, 'model_id': model_1, 'probability': probability_1})
                 transactions_list.append({'client_id': client_index, 'model_id': model_2, 'probability': probability_2})
 
@@ -111,11 +127,16 @@ for client_id in range(1, 2):
 
     sales_updated_all.append(pd.concat(sales_updated))
 
+print(skipped)
+
 
 #%% Concat all customers
 
-
 sales_updated_all_in_one = pd.concat(sales_updated_all)
 
-sales_updated_all_in_one.to_csv('/Users/petrkozyrev/workspace/jump-api/learning/sales_updated.csv', sep='\t', encoding='utf-8', index=False)
+sales_updated_all_in_one.to_csv('DeepRecommender/data_utils/sales/SALES_MONTH_SPLIT_ALL.csv', sep='\t', encoding='utf-8', index=False)
 
+
+#%%
+
+print(pd.DataFrame(sales_updated_all_in_one['model_id'].unique()))
