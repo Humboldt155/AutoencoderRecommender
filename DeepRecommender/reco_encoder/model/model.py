@@ -36,10 +36,11 @@ def activation(input, kind):
 def MSEloss(inputs, targets, size_avarage=False):
   """
   Masked Mean Square Error Loss http://pytorch.org/docs/master/nn.html#torch.nn.MSELoss
+  Маскированная Среднеквадратическая Ошибка
   :param input: Входные данные
   :param targets: Целевые данные
-  :param size_avarage: if True, losses are averaged over observations for each minibatch, if False, the losses are
-  summed for each minibatch
+  :param size_avarage: если True, потери усредняются по наблюдениям для каждой мини-партии, если False, потери
+  суммируются для каждой мини-партии
   """
   mask = targets != 0
   num_ratings = torch.sum(mask.float())
@@ -50,13 +51,13 @@ def MSEloss(inputs, targets, size_avarage=False):
 class AutoEncoder(nn.Module):
   def __init__(self, layer_sizes, nl_type='selu', is_constrained=True, dp_drop_prob=0.0, last_layer_activations=True):
     """
-    Describes an AutoEncoder model
-    :param layer_sizes: Encoder network description. Should start with feature size (e.g. dimensionality of x).
-    For example: [10000, 1024, 512] will result in:
-      - encoder 2 layers: 10000x1024 and 1024x512. Representation layer (z) will be 512
-      - decoder 2 layers: 512x1024 and 1024x10000.
-    :param nl_type: (default 'selu') Type of no-linearity
-    :param is_constrained: (default: True) Should constrain decoder weights
+    Описывает модель Автоэнкодера
+    :param layer_sizes: Описание сети энкодера. Должен начинаться с количества характеристик (т.е. размерности x).
+    Например, результатом: [10000, 1024, 512] будет:
+      - энкодер с 2 слоями: 10000x1024 и 1024x512. Уровень представления (z) будет 512
+      - декодер с 2 слоями: 512x1024 и 1024x10000.
+    :param nl_type: (default: 'selu') Тип нелинейности
+    :param is_constrained: (default: True) Должен ли ограничевать вес декодера
     :param dp_drop_prob: (default: 0.0) Dropout drop probability
     :param last_layer_activations: (default: True) Whether to apply activations on last decoder layer
     """
